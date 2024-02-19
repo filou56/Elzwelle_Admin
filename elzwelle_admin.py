@@ -30,33 +30,39 @@ class simpleapp_tk(tkinter.Tk):
         #sticking to the left and to the right of the cell
         self.labelVariable = tkinter.StringVar()
         label = tkinter.Label(self,text="Administration",anchor="c",fg="black",bg="white")
-        label.grid(row=0,column=0,columnspan=2,sticky="EW")
+        label.grid(row=0,column=0,columnspan=3,sticky="EW")
 
         label1 = tkinter.Label(self,text="Start",relief=tkinter.SUNKEN,bg="white")
         label1.grid(row=1,column=0,sticky="EW")
 
-        label2 = tkinter.Label(self,text="Finish",relief=tkinter.SUNKEN,bg="white")
+        label2 = tkinter.Label(self,text="Ziel",relief=tkinter.SUNKEN,bg="white")
         label2.grid(row=1,column=1,sticky="EW")
      
-        #Add a button that says 'Start' at (1,0)
-        button1 = tkinter.Button(self,text="Prepare",command=self.PrepareStartButtonClicked)
+        label3 = tkinter.Label(self,text="Strecke",relief=tkinter.SUNKEN,bg="white")
+        label3.grid(row=1,column=2,sticky="EW")
+        
+        button1 = tkinter.Button(self,text="Format",command=self.PrepareStartButtonClicked)
         button1.grid(row=2,column=0,sticky="EW")
 
-        #Add a button that says 'Ziel' at (1,1)
-        button2 = tkinter.Button(self,text="Prepare",command=self.PrepareFinishButtonClicked)
+        button2 = tkinter.Button(self,text="Format",command=self.PrepareFinishButtonClicked)
         button2.grid(row=2,column=1,sticky="EW")
         
-        #Add a button that says 'Start' at (1,0)
-        button3 = tkinter.Button(self,text="Clear",command=self.ClearStartButtonClicked)
-        button3.grid(row=3,column=0,sticky="EW")
+        button3 = tkinter.Button(self,text="Format",command=self.PrepareCourseButtonClicked)
+        button3.grid(row=2,column=2,sticky="EW")
+        
+        button4 = tkinter.Button(self,text="Loeschen",command=self.ClearStartButtonClicked)
+        button4.grid(row=3,column=0,sticky="EW")
 
-        #Add a button that says 'Ziel' at (1,1)
-        button4 = tkinter.Button(self,text="Clear",command=self.ClearFinishButtonClicked)
-        button4.grid(row=3,column=1,sticky="EW")
+        button5 = tkinter.Button(self,text="Loeschen",command=self.ClearFinishButtonClicked)
+        button5.grid(row=3,column=1,sticky="EW")
+        
+        button6 = tkinter.Button(self,text="Loeschen",command=self.ClearCourseButtonClicked)
+        button6.grid(row=3,column=2,sticky="EW")
               
         #Make the first column (0) resize when window is resized horizontally
         self.grid_columnconfigure(0,weight=1)
         self.grid_columnconfigure(1,weight=1)
+        self.grid_columnconfigure(2,weight=1)
 
         self.geometry("500x500")
         #Make the user only being able to resize the window horrizontally
@@ -64,11 +70,11 @@ class simpleapp_tk(tkinter.Tk):
      
     def PrepareStartButtonClicked(self):
         print("Prepare Start Spreadsheet")
-        wks_start.update([["Uhrzeit","Zeitstempel","Startnummer"]],"A1")
-        wks_start.update([["00:00:00","0,00","0"]],"A2")
+        wks_start.update([["Uhrzeit","Zeitstempel","Startnummer","Kommentar"]],"A1")
+        wks_start.update([["00:00:00","0,00","0"," "]],"A2")
         
-        wks_start.format("A1:C1",  { 
-                "horizontalAlignment": "CENTER",
+        wks_start.format("D2:D",  { 
+                "horizontalAlignment": "Left",
                 "textFormat": {
                     "bold": True,
                     "fontSize": 12,
@@ -102,7 +108,7 @@ class simpleapp_tk(tkinter.Tk):
                 },
             }
         ) 
-        wks_start.format("A1:C1",  { 
+        wks_start.format("A1:D1",  { 
                 "horizontalAlignment": "CENTER",
                 "textFormat": {
                     "bold": True,
@@ -113,9 +119,17 @@ class simpleapp_tk(tkinter.Tk):
 
     def PrepareFinishButtonClicked(self):
         print("Prepare Finish Spreadsheet")
-        wks_finish.update([["Uhrzeit","Zeitstempel","Startnummer"]],"A1")
-        wks_finish.update([["00:00:00","0,00"," "]],"A2")
+        wks_finish.update([["Uhrzeit","Zeitstempel","Startnummer","Kommentar"]],"A1")
+        wks_finish.update([["00:00:00","0,00","0"," "]],"A2")
         
+        wks_finish.format("D2:D",  { 
+                "horizontalAlignment": "Left",
+                "textFormat": {
+                    "bold": True,
+                    "fontSize": 12,
+                },
+            }
+        )
         wks_finish.format("C2:C",  { 
                 "numberFormat": { "type": "NUMBER","pattern": '#0' },
                 "horizontalAlignment": "RIGHT",
@@ -143,7 +157,7 @@ class simpleapp_tk(tkinter.Tk):
                 },
             }
         ) 
-        wks_finish.format("A1:C1",  { 
+        wks_finish.format("A1:D1",  { 
                 "horizontalAlignment": "CENTER",
                 "textFormat": {
                     "bold": True,
@@ -152,14 +166,66 @@ class simpleapp_tk(tkinter.Tk):
             }
         )
         
+    def PrepareCourseButtonClicked(self):
+        print("Prepare Course Spreadsheet")
+        wks_course.update([["Startnummer","Tornummer","Strafzeit","Kommentar"]],"A1")
+        wks_course.update([["0","0","0"," "]],"A2")
         
+        wks_course.format("D2:D",  { 
+                "horizontalAlignment": "Left",
+                "textFormat": {
+                    "bold": True,
+                    "fontSize": 12,
+                },
+            }
+        )
+        wks_course.format("C2:C",  { 
+                "numberFormat": { "type": "NUMBER","pattern": '#0' },
+                "horizontalAlignment": "RIGHT",
+                "textFormat": {
+                    "bold": True,
+                    "fontSize": 12,
+                },
+            }
+        )
+        wks_course.format("B2:B",  { 
+                "numberFormat": { "type": "NUMBER","pattern": "#0" },
+                "horizontalAlignment": "RIGHT",
+                "textFormat": {
+                    "bold": True,
+                    "fontSize": 12,
+                },
+            }
+        )        
+        wks_course.format("A2:A",  { 
+                "numberFormat": { "type": "NUMBER","pattern": "#0" },
+                "horizontalAlignment": "RIGHT",
+                "textFormat": {
+                    "bold": True,
+                    "fontSize": 12,
+                },
+            }
+        ) 
+        wks_course.format("A1:D1",  { 
+                "horizontalAlignment": "CENTER",
+                "textFormat": {
+                    "bold": True,
+                    "fontSize": 12,
+                },
+            }
+        )
+               
     def ClearStartButtonClicked(self):
         print("Clear Finish Spreadsheet")
-        wks_start.batch_clear(['A3:A','B3:B','C2:C'])
+        wks_start.batch_clear(['A3:A','B3:B','C2:C','D2:D'])
         
     def ClearFinishButtonClicked(self):
         print("Clear Finish Spreadsheet")
-        wks_finish.batch_clear(['A3:A','B3:B','C2:C'])
+        wks_finish.batch_clear(['A3:A','B3:B','C2:C','D2:D'])
+        
+    def ClearCourseButtonClicked(self):
+        print("Clear Course Spreadsheet")
+        wks_course.batch_clear(['A3:A','B3:B','C2:C','D2:D'])    
         
 #-------------------------------------------------------------------
 # Main program
@@ -191,6 +257,9 @@ if __name__ == '__main__':
     #print("Ranges: ",gc.open("timestamp").list_protected_ranges(0))
     # Open a sheet from a spreadsheet in one go
     wks_finish = gc.open("timestamp").get_worksheet(1)
+    
+    # Open a sheet from a spreadsheet in one go
+    wks_course = gc.open("timestamp").get_worksheet(2)
 
     # setup and start GUI
     app = simpleapp_tk(None)
