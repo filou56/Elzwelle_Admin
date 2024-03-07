@@ -6,10 +6,13 @@ import platform
 import time
 import tkinter
 
+from   tkinter import messagebox
+from   pathlib import Path
+
 # Google Spreadsheet ID for publishing times
 # Elzwelle        SPREADSHEET_ID = '1obtfHymwPSGoGoROUialryeGiMJ1vkEUWL_Gze_hyfk'
 # FilouWelle      SPREADSHEET_ID = '1M05W0igR6stS4UBPfbe7-MFx0qoe5w6ktWAcLVCDZTE'
-SPREADSHEET_ID = '1M05W0igR6stS4UBPfbe7-MFx0qoe5w6ktWAcLVCDZTE'
+# SPREADSHEET_ID = '1M05W0igR6stS4UBPfbe7-MFx0qoe5w6ktWAcLVCDZTE'
 
 #-------------------------------------------------------------------
 # Define the GUI
@@ -240,7 +243,7 @@ if __name__ == '__main__':
 
     config = configparser.ConfigParser()
    
-    config['google'] = {'spreadsheet_id':SPREADSHEET_ID}
+    #config['google'] = {'spreadsheet_id':SPREADSHEET_ID}
     
     # Platform specific
     if myPlatform == 'Windows':
@@ -252,20 +255,33 @@ if __name__ == '__main__':
 
     gc = gspread.service_account(filename='../../.elzwelle/client_secret.json')
     
-    # Open a sheet from a spreadsheet in one go
-    wks_start = gc.open("timestamp").get_worksheet(0)
-    #print("Ranges: ",gc.open("timestamp").list_protected_ranges(0))
-    # Open a sheet from a spreadsheet in one go
-    wks_finish = gc.open("timestamp").get_worksheet(1)
+    client_secret_file = config.get('google','client_secret_json')
+    try:
+        if client_secret_file.startswith(".elzwelle"):
+            home_dir = Path.home()
+            print( f'Home path: { home_dir }' )
+            client_secret_file = os.path.join(home_dir,client_secret_file)
+        print( f'Client secret path: { client_secret_file }' )
+        google_client = gspread.service_account(filename=client_secret_file)
+        
+        # Open a sheet from a spreadsheet in one go
+        wks_start = gc.open(config.get('google','spreadsheet_name')).get_worksheet(0)
+        #print("Ranges: ",gc.open("timestamp").list_protected_ranges(0))
+        # Open a sheet from a spreadsheet in one go
+        wks_finish = gc.open(config.get('google','spreadsheet_name')).get_worksheet(1)
+        
+        # Open a sheet from a spreadsheet in one go
+        wks_course = gc.open(config.get('google','spreadsheet_name')).get_worksheet(2)
     
-    # Open a sheet from a spreadsheet in one go
-    wks_course = gc.open("timestamp").get_worksheet(2)
-
-    # setup and start GUI
-    app = simpleapp_tk(None)
-    app.title("Elzwelle Zeitmessung")
-#    app.refresh()
-    app.mainloop()
+        # setup and start GUI
+        app = simpleapp_tk(None)
+        app.title("Elzwelle Zeitmessung")
+    #    app.refresh()
+        app.mainloop()
+    except Exception as e:
+        messagebox.showerror(title="Fehler", message="Keine Verbindung zu Google Sheets!")
+        print("Error: ",e)
+        
     print(time.asctime(), "GUI done")
           
     # Stop all dangling threads
